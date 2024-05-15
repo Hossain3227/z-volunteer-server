@@ -98,13 +98,28 @@ async function run() {
 
     //delete a user's post 
 
-    app.delete('/volunteers/:id', async (req, res) => {
+    app.delete('/volunteer/:id', async (req, res) => {
       const id = req.params.id 
       const query = {_id: new ObjectId(id)}
       const result = await volunteerCollection.deleteOne(query)
       res.send(result)
     })
+  //update a post 
 
+  app.put('/volunteer/:id', async (req, res) => {
+    const id = req.params.id
+    const volunteerData = req.body
+    const query = {_id: new ObjectId(id)}
+    const options = {upsert:true}
+    const updateD = {
+      $set: {
+        ...volunteerData,
+      }
+    }
+    const result = await volunteerCollection.updateOne(query,updateD,options)
+    res.send(result)
+
+  })
 
 
     // Send a ping to confirm a successful connection
