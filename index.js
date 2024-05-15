@@ -39,7 +39,7 @@ async function run() {
     // await client.connect();
 
     const volunteerCollection = client.db('addvolunteer').collection('work')
-    const requestCollection = client.db('addvolunter').collection('request')
+    const requestCollection = client.db('addvolunteer').collection('request')
 
     app.get('/volunteer', async (req, res) => {
       const result = await volunteerCollection.find().toArray()
@@ -84,6 +84,24 @@ async function run() {
       const volunteerData = req.body
       console.log(volunteerData)
       const result = await volunteerCollection.insertOne(volunteerData)
+      res.send(result)
+    })
+
+    //particular user's post
+
+    app.get('/volunteers/:email', async (req, res) => {
+      const email = req.params.email 
+      const query = {'Organizer.email':email}
+      const result = await volunteerCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    //delete a user's post 
+
+    app.delete('/volunteers/:id', async (req, res) => {
+      const id = req.params.id 
+      const query = {_id: new ObjectId(id)}
+      const result = await volunteerCollection.deleteOne(query)
       res.send(result)
     })
 
