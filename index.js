@@ -138,6 +138,27 @@ async function run() {
     })
 
 
+    //pagination work 
+
+    app.get('/all-vols', async (req, res) => {
+      
+      const size = parseInt(req.query.size)
+      const page = parseInt(req.query.page) -1
+      console.log(size,page);
+      
+      const result = await volunteerCollection.find().skip(page*size).limit(size).toArray()
+
+
+      res.send(result);
+    })
+
+    app.get('/vol-sum', async (req, res) => {
+      const sum = await volunteerCollection.countDocuments()
+
+
+      res.send({sum});
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
