@@ -144,17 +144,35 @@ async function run() {
       
       const size = parseInt(req.query.size)
       const page = parseInt(req.query.page) -1
+      const filter = req.query.filter
+      const search = req.query.search
+      
       console.log(size,page);
       
-      const result = await volunteerCollection.find().skip(page*size).limit(size).toArray()
+      let query = {
+        title: {$regex: search, $options: 'i'},
+      }
+      if(filter) query.Category = filter
+
+      const result = await volunteerCollection.find(query).skip(page*size).limit(size).toArray()
 
 
       res.send(result);
     })
 
     app.get('/vol-sum', async (req, res) => {
-      const sum = await volunteerCollection.countDocuments()
+      const filter = req.query.filter
+      const search = req.query.search
+      // let query = {}
+      // if(filter) query = {Category:filter}
+      let query = {
+        title: {$regex: search, $options: 'i'},
+      }
+      if(filter) query.Category = filter
 
+      const sum = await volunteerCollection.countDocuments(query)
+
+      
 
       res.send({sum});
     })
